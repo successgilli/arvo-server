@@ -1,0 +1,48 @@
+{
+  "name": "arvo-server",
+  "version": "1.0.0",
+  "description": "ARVO SERVER",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run build && node ./build/index.js",
+    "db:migrate:undo": "npx sequelize-cli db:migrate:undo:all",
+    "db:migrate": "npx sequelize-cli db:migrate",
+    "db:seedAll": "npx sequelize-cli db:seed:all",
+    "db:undo:seedAll": "npx sequelize-cli db:seed:undo:all",
+    "dev:start": "nodemon --exec babel-node ./server/index.js",
+    "build": "babel server -d build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/successgilli/arvo-server.git"
+  },
+  "author": "A.N Gilbert",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "faker": "^4.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.3.0",
+    "pg-hstore": "^2.3.3",
+    "regenerator-runtime": "^0.13.7",
+    "sequelize": "^6.3.3",
+    "uuid": "^8.2.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.10.5",
+    "@babel/node": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/register": "^7.10.5",
+    "nodemon": "^2.0.4",
+    "sequelize-cli": "^6.2.0"
+  },
+  "bugs": {
+    "url": "https://github.com/successgilli/arvo-server/issues"
+  },
+  "homepage": "https://github.com/successgilli/arvo-server#readme"
+}
