@@ -46,6 +46,12 @@ module.exports = (sequelize, DataTypes) => {
     email: {
       type: DataTypes.STRING
     },
+    leader: {
+      type: DataTypes.STRING
+    },
+    gender: {
+      type: DataTypes.STRING
+    },
     lgaId: {
       allowNull: false,
       foreignKey: true,

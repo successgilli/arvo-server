@@ -4,7 +4,7 @@ export default {
             const expectedFields = [
                 'firstname', 'lastname', 'wardId', 'lgaId',
                 'membershipStatus', 'puId', 'phone', 'email',
-                'religion', 'occupation', 'designation'
+                'religion', 'occupation', 'designation', 'gender', 'leader'
             ]
             
             const partyForm = {};

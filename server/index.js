@@ -35,6 +35,6 @@ app.all('*', (req, res) => {
     })
 })
 app.use(expressErroHandle);
-db.sequelize.sync();
+// db.sequelize.sync();
 
 app.listen(port, () => console.log('server started'));
