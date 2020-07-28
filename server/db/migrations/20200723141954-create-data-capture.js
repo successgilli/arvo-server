@@ -20,6 +20,12 @@ module.exports = {
       email: {
         type: Sequelize.STRING
       },
+      leader: {
+        type: Sequelize.STRING
+      },
+      gender: {
+        type: Sequelize.STRING
+      },
       lgaId: {
         allowNull: false,
         foreignKey: true,
