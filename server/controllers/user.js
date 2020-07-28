@@ -76,6 +76,7 @@ export default {
                 status: 200
             })
         } catch (err) {
+            console.log(err)
             await transaction.rollback();
             err.status = 400;
             next(err);
