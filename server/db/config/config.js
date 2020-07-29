@@ -17,20 +17,24 @@ module.exports = {
     "database": DATABASE_NAME,
     "host": DATABASE_HOST,
     "port": DATABASE_PORT,
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "ssl": true
   },
   "test": {
     "username": "root",
     "password": null,
     "database": "database_test",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "ssl": true
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "username": DATABASE_USER,
+    "password": DATABASE_PASSWORD,
+    "database": DATABASE_NAME,
+    "host": DATABASE_HOST,
+    "port": DATABASE_PORT,
+    "dialect": "postgres",
+    "ssl": true
   }
 }
