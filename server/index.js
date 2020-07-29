@@ -20,10 +20,10 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/api/v1', routes);
 
-const port = 8080;
+const port = process.env.PORT || 8080;
 
 app.use(express.static(path.resolve(__dirname, '../public')))
-app.get('/', (req, res) => {
+app.get('/*', (req, res) => {
     console.log('here')
     res.sendFile(path.resolve(__dirname, '../public/index.html'))
 });
@@ -35,6 +35,6 @@ app.all('*', (req, res) => {
     })
 })
 app.use(expressErroHandle);
-// db.sequelize.sync();
+db.sequelize.sync();
 
 app.listen(port, () => console.log('server started'));

@@ -4,13 +4,13 @@
   "description": "ARVO SERVER",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && node ./build/index.js",
+    "start": "node build/index.js",
     "db:migrate:undo": "npx sequelize-cli db:migrate:undo:all",
     "db:migrate": "npx sequelize-cli db:migrate",
     "db:seedAll": "npx sequelize-cli db:seed:all",
     "db:undo:seedAll": "npx sequelize-cli db:seed:undo:all",
     "dev:start": "nodemon --exec babel-node ./server/index.js",
-    "build": "babel server -d build",
+    "build": "babel server --out-dir build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,6 +20,7 @@
   "author": "A.N Gilbert",
   "license": "MIT",
   "dependencies": {
+    "@babel/runtime": "^7.10.5",
     "bcrypt": "^5.0.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
