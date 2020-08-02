@@ -45,40 +45,40 @@ export default {
         lgaId: {
             in: 'body',
             notEmpty: true,
-            errorMessage: "field is required",
+            errorMessage: "lga field is required",
             isNumeric: {
-                errorMessage: 'must be a valid number'
+                errorMessage: 'lga must be a valid number'
             },
             isLength: {
-                errorMessage: 'length must be between 1 and 100',
+                errorMessage: 'lgaId length must be between 1 and 100',
                 options: [{ max: 1, max: 100 }]
             }
         },
         wardId: {
             in: 'body',
             notEmpty: true,
-            errorMessage: "field is required",
+            errorMessage: "ward field is required",
             isNumeric: {
-                errorMessage: 'must be a valid number'
+                errorMessage: 'wardId must be a valid number'
             },
             isLength: {
-                errorMessage: 'length must be between 1 and 100',
+                errorMessage: 'wardId length must be between 1 and 100',
                 options: [{ max: 1, max: 100 }]
             }
         },
         puId: {
             in: 'body',
             notEmpty: true,
-            errorMessage: "field is required",
+            errorMessage: "pooling unit field is required",
             isLength: {
-                errorMessage: 'length must be between 1 and 100',
+                errorMessage: 'pooling unit length must be between 1 and 100',
                 options: [{ max: 100 }]
             }
         },
         membershipStatus: {
             in: 'body',
             notEmpty: true,
-            errorMessage: "field is required",
+            errorMessage: "membership field is required",
             custom: {
                 options: (value, { req }) => {
                     if(value && value.length) {
@@ -92,18 +92,17 @@ export default {
                     }
                     return false;
                 },
-                errorMessage: "must be an array of integers"
+                errorMessage: "membership must be an array of integers"
             }
         },
         designation: {
             in: 'body',
             optional: { options: { nullable: true } },
-            notEmpty: true,
-            errorMessage: "field is required",
             custom: {
                 options: (value, { req }) => {
                     if(value && value.length) {
                         const erorvals = [];
+
                         value.forEach(item => {
                             if(!isFinite(item)) erorvals.push(false);
                         })
@@ -111,16 +110,16 @@ export default {
                         if(erorvals.includes(false)) return false;
                         return true;
                     }
-                    return false;
+                    return true;
                 },
-                errorMessage: "must be an array of integers"
+                errorMessage: "designation must be an array of integers"
             }
         },
         religion: {
             in: 'body',
             optional: { options: { nullable: true } },
             isLength: {
-                errorMessage: 'length must be between 1 and 100',
+                errorMessage: 'religion length must be between 1 and 100',
                 options: [{ max: 100 }]
             }
         },
@@ -128,7 +127,7 @@ export default {
             in: 'body',
             optional: { options: { nullable: true } },
             isLength: {
-                errorMessage: 'length must be between 1 and 100',
+                errorMessage: 'occupation length must be between 1 and 100',
                 options: [{ max: 100 }]
             }
         },
@@ -136,7 +135,7 @@ export default {
             in: 'body',
             optional: { options: { nullable: true } },
             isLength: {
-                errorMessage: 'length must be between 1 and 100',
+                errorMessage: 'leader length must be between 1 and 100',
                 options: [{ max: 100 }]
             }
         },
@@ -145,7 +144,7 @@ export default {
             optional: { options: { nullable: true } },
             matches: {
                 options: [/^male$|^female$/i, 'i'],
-                errorMessage: 'must be either male or female'
+                errorMessage: 'gender must be either male or female'
             }
         },
     }

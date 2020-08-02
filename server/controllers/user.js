@@ -1,32 +1,72 @@
 import db from '../db/models';
+import pgHelpers from '../db/pgHelpers/datacapture';
+
+const {
+    search
+} = pgHelpers;
 
 const {
     DataCapture, DataCaptureMembership,
     DatatCaptureDesignation
 } = db;
 
+const arrangePgData = (rows) => {
+    const resObj = rows.map((item) => (
+        {
+            id: item.id,
+            firstname: item.firstname,
+            lastname: item.lastname,
+            phone: item.phone,
+            email: item.email,
+            leader: item.leader,
+            gender: item.gender,
+            lgaId: item.lgaid,
+            wardId: item.wardid,
+            puId: item.puid,
+            occupation: item.occupation,
+            religion: item.religion,
+            lga: item.lganame,
+            ward: item.wardname,
+            pu: item.puname,
+            memberships: (
+                item['memberships'] ? item['memberships'].split(', ').map(item => ({
+                    id: item.charAt(0),
+                    name: item.slice(1)
+                })) : []
+            ),
+            designations: (
+                item['designations'] ? item['designations'].split(', ').map(item => ({
+                    id: item.charAt(0),
+                    name: item.slice(1)
+                })) : [])
+        }
+    ));
+
+    return Object.keys(resObj).map(key => resObj[key]);
+}
+
 const arrangeMemberData = (memberQueryArray) => (
     memberQueryArray.map(({
-    Lga, Ward, Pu, DataCaptureMemberships,
-    DatatCaptureDesignations,
-    ...memberData
-}) => ({
-    ...memberData.dataValues,
-    lga: Lga.name,
-    ward: Ward.name,
-    pu: Pu.name,
-    memberships: DataCaptureMemberships.map(({ MembershipStatus }) => MembershipStatus),
-    designations: DatatCaptureDesignations.map(({ Designation }) => Designation)
-})).reduce((acc, item) => {
-    const {
-        Lga, Ward, Pu,
-        DataCaptureMemberships,
+        Lga, Ward, Pu, DataCaptureMemberships,
         DatatCaptureDesignations,
-        ...selected
-    } = item;
+        ...memberData
+    }) => ({
+        ...memberData.dataValues,
+        lga: Lga.name,
+        ward: Ward.name,
+        pu: Pu.name,
+        memberships: DataCaptureMemberships.map(({ MembershipStatus }) => MembershipStatus),
+        designations: DatatCaptureDesignations.map(({ Designation }) => Designation)
+    })).reduce((acc, item) => {
+        const {
+            Lga, Ward, Pu,
+            DataCaptureMemberships,
+            DatatCaptureDesignations,
+            ...selected
+        } = item;
 
-    return [ ...acc, selected ]
-}, []));
+        return [...acc, selected]
+    }, []));
 
 
 export default {
@@ -43,7 +83,7 @@ export default {
                 DataCaptureId: dataFields.id,
                 MembershipStatusId: item
             }));
-            
+
             await DataCaptureMembership.bulkCreate(
                 membershipSelection, { transaction }
             );
@@ -58,7 +98,7 @@ export default {
                     designationSelection, { transaction }
                 );
             }
-            
+
             await transaction.commit();
 
             const inputPartyMember = await DataCapture.findOne({
@@ -70,35 +110,64 @@ export default {
             });
 
             const selectedData = arrangeMemberData([inputPartyMember])[0];
-    
+
             return res.status(200).json({
                 data: selectedData,
                 status: 200
             })
         } catch (err) {
-            console.log(err)
             await transaction.rollback();
             err.status = 400;
             next(err);
         }
     },
     getAll: async (req, res, next) => {
-        try{
-            const members = await DataCapture.findAll({
+        try {
+            // remember to validate query params
+            const { page, limit, query } = req.userQuery;
+            const offset = limit * (page - 1);
+
+            let options = {
                 include: {
                     all: true,
-                    nested: true
+                    nested: true,
                 },
-                order: [['id', 'DESC']]
-            });
-            
-            const selectedData = arrangeMemberData(members);
+                order: [['id', 'DESC']],
+                limit,
+                offset,
+                distinct: true,
+            };
+
+            let total
+            let rows;
+
+            if (query.trim() !== '') {
+                const pgRes = await search(limit, offset, query);
+                const { values, totalCount } = pgRes;
+
+                rows = arrangePgData(values);
+                total = totalCount;
+
+            } else {
+                const members = await DataCapture.findAndCountAll(options);
+                const { rows: rowRes, count } = members;
+                const selectedData = arrangeMemberData(rowRes);
+
+                rows = selectedData;
+                total = count;
+            }
 
             return res.status(200).json({
-                data: selectedData,
+                data: {
+                    rows,
+                    total,
+                    page,
+                    limit,
+                    offset
+                },
                 status: 200
             });
-        }catch(err){
+        } catch (err) {
             next(err);
         }
     }

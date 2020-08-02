@@ -18,7 +18,8 @@ module.exports = {
     "host": DATABASE_HOST,
     "port": DATABASE_PORT,
     "dialect": "postgres",
-    "ssl": true
+    "ssl": true,
+    "logging": false,
   },
   "test": {
     "username": "root",
@@ -35,6 +36,7 @@ module.exports = {
     "host": DATABASE_HOST,
     "port": DATABASE_PORT,
     "dialect": "postgres",
-    "ssl": true
+    "ssl": true,
+    "logging": false,
   }
 }

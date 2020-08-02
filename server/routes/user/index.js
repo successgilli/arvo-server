@@ -8,13 +8,17 @@ import { validateInputs, checkValidations} from '../../middlewares/validator';
 
 
 const { postMember, getAll } = userController;
-const { extractPartyData } = userMiddleware;
+const { extractPartyData, validateSearh } = userMiddleware;
 const { validatePartyPost } = partyValidatorRule;
 const { checkToken } = tokenMiddleware;
 
 const route = express.Router();
 
-route.get('/party/member', checkToken, getAll);
+route.get(
+    '/party/member',
+    checkToken,
+    validateSearh,
+    getAll);
 
 route.post(
     '/party/member',

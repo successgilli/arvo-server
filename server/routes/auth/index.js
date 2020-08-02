@@ -10,5 +10,4 @@ const route = express.Router();
 
 route.post('/login', checkUserInDb, login);
 
-
 export default route;
