@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/api/v1', routes);
 
-const port = process.env.PORT || 8081;
+const port = process.env.PORT || 8080;
 
 app.use(express.static(path.resolve(__dirname, '../public')))
 app.get('/*', (req, res) => {
