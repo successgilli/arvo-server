@@ -1,7 +1,3 @@
-import regexPatterns from '../helpers/regex';
-
-const { blacklist } = regexPatterns;
-
 export default {
     extractPartyData: async (req, res, next) => {
         try{
@@ -27,12 +23,25 @@ export default {
     validateSearh: async (req, res, next) => {
         try{
             const { page, limit, search } = req.query;
-            const validatedSearch = search.replace(blacklist, '');
+            const filterfields = [
+                "gender", "lganame", "wardname", "puname", "religion",
+                "memberships", "designations", "occupation"
+            ];
+
+            const filterObject = filterfields.reduce((acc, item) => {
+                if(item in req.query && (req.query[item] !== ''))
+                return { ...acc, [item]: req.query[item] };
+
+                return { ...acc };
+            }, {});
+
+            
 
             req.userQuery = {
                 page: parseInt(page || 1),
                 limit: parseInt(limit || 10),
-                query: validatedSearch.trim() || ''
+                query: search.trim() || '',
+                filterObject: (Object.keys(filterObject).length) ? filterObject : null
             };
 
             next()

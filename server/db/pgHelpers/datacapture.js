@@ -1,38 +1,44 @@
 import pgConnect from '../pg';
 
 export default {
-    search: async (limit, offset, query) => {
+    search: async (
+        limit, offset,
+        query,
+        filterObj,
+        fields
+    ) => {
+        let queryString = 'from datacaptureExtended where';
+        const filterArray = (filterObj) ? Object.keys(filterObj) : [];
+        const xand = fields.filter(item => !filterArray.includes(item));
+
+        filterArray.forEach((item, index) => {
+            queryString +=
+                ` ${item} ilike '%${filterObj[item]}%' ${((filterArray.length - 1) === index) ? '' : 'and'}`;
+
+        });
+
+
+        xand.forEach((item, index) => {
+            queryString +=
+                ` ${(
+                    (!index) && filterArray.length
+                ) ? `and (${item} ilike '%${query}%' ${((xand.length - 1) === index) ? ')' : 'or'}` : (
+                        (!index) ? (
+                            `(${item} ilike '%${query}%' ${((xand.length - 1) === index) ? ')' : 'or'}`
+                        ) :
+                            (`${item} ilike '%${query}%' ${((xand.length - 1) === index) ? ')'
+                                : 'or'}`)
+                    )
+                }`;
+        });
+
         const response = await pgConnect.query(`
-        select * from datacaptureExtended where memberships
-        ilike '%${query}%' or designations ilike '%${query}%'
-        or firstname ilike '%${query}%'
-        or lastname ilike '%${query}%'
-        or phone ilike '%${query}%'
-        or email ilike '%${query}%'
-        or leader ilike '%${query}%'
-        or gender ilike '%${query}%'
-        or lganame ilike '%${query}%'
-        or wardname ilike '%${query}%'
-        or puname ilike '%${query}%'
-        or religion ilike '%${query}%'
-        or occupation ilike '%${query}%'
-        limit $1 offset $2
-        `, [limit, offset]);
+        select * ${queryString} limit $1 offset $2`,
+            [limit, offset]
+        );
 
         const count = await pgConnect.query(`
-        select count(distinct id) from datacaptureExtended where memberships
-        ilike '%${query}%' or designations ilike '%${query}%'
-        or firstname ilike '%${query}%'
-        or lastname ilike '%${query}%'
-        or phone ilike '%${query}%'
-        or email ilike '%${query}%'
-        or leader ilike '%${query}%'
-        or gender ilike '%${query}%'
-        or lganame ilike '%${query}%'
-        or wardname ilike '%${query}%'
-        or puname ilike '%${query}%'
-        or religion ilike '%${query}%'
-        or occupation ilike '%${query}%'
+        select count(distinct id) ${queryString}
         `);
 
         const { rows } = response;

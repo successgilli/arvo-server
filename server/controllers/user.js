@@ -124,8 +124,13 @@ export default {
     getAll: async (req, res, next) => {
         try {
             // remember to validate query params
-            const { page, limit, query } = req.userQuery;
+            const { page, limit, query, filterObject } = req.userQuery;
             const offset = limit * (page - 1);
+            const allFields = [
+                "gender", "lganame", "wardname", "puname", "religion",
+                "phone", "email", "occupation", "firstname", "lastname",
+                "leader", "memberships", "designations"
+            ];
 
             let options = {
                 include: {
@@ -141,8 +146,8 @@ export default {
             let total
             let rows;
 
-            if (query.trim() !== '') {
-                const pgRes = await search(limit, offset, query);
+            if ((query.trim() !== '') || filterObject) {
+                const pgRes = await search(limit, offset, query, filterObject, allFields);
                 const { values, totalCount } = pgRes;
 
                 rows = arrangePgData(values);
