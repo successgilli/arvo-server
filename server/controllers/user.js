@@ -2,7 +2,7 @@ import db from '../db/models';
 import pgHelpers from '../db/pgHelpers/datacapture';
 
 const {
-    search
+    search, getAll
 } = pgHelpers;
 
 const {
@@ -154,12 +154,11 @@ export default {
                 total = totalCount;
 
             } else {
-                const members = await DataCapture.findAndCountAll(options);
-                const { rows: rowRes, count } = members;
-                const selectedData = arrangeMemberData(rowRes);
+                const pgRes = await getAll('datacaptureExtended', limit, offset);
+                const { values, totalCount } = pgRes;
 
-                rows = selectedData;
-                total = count;
+                rows = arrangePgData(values);
+                total = totalCount;
             }
 
             return res.status(200).json({

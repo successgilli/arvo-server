@@ -48,5 +48,23 @@ export default {
             values: rows || [],
             totalCount: (rowCount[0]) ? rowCount[0].count : 0
         };
+    },
+    getAll: async (table, limit, offset) => {
+        const response = await pgConnect.query(`
+        select * from ${table} limit $1 offset $2`,
+            [limit, offset]
+        );
+
+        const count = await pgConnect.query(`
+        select count(distinct id) from ${table}
+        `);
+
+        const { rows } = response;
+        const { rows: rowCount } = count;
+
+        return {
+            values: rows || [],
+            totalCount: (rowCount[0]) ? rowCount[0].count : 0
+        }; 
     }
 };

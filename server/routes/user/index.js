@@ -4,7 +4,7 @@ import userController from '../../controllers/user';
 import userMiddleware from '../../middlewares/user';
 import partyValidatorRule from '../../validators/party';
 import tokenMiddleware from '../../middlewares/token';
-import { validateInputs, checkValidations} from '../../middlewares/validator';
+import { validateInputs, checkValidations } from '../../middlewares/validator';
 import partySanitizers from '../../middlewares/sanitizers';
 
 
